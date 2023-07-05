@@ -55,7 +55,9 @@ class CopterHandler:
             else:
                 current_vel[0] = 0
 
-
+            dist_x = math.sqrt((p[0] - pos[0]) ** 2)
+            dist_y = math.sqrt((p[1] - pos[1]) ** 2)
+            dist_z = math.sqrt((p[2] - pos[2]) ** 2)
             dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
             self.publish_visual()
         self.position = pos
