@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import math
 from visualization_msgs.msg import Marker
 from AbstractVirtualCapability import VirtualCapabilityServer
 
@@ -12,9 +13,51 @@ class CopterHandler:
         self.position = [0, 0, 2.]
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
+
+        self.max_vel = .5
+        self.acc = 0.004
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
 
-    def set_pos(self, pos: list):
+    def set_pos(self, p: list):
+        pos = self.position
+        dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
+
+        dist_x = math.sqrt((p[0] - pos[0]) ** 2)
+        dist_y = math.sqrt((p[1] - pos[1]) ** 2)
+        dist_z = math.sqrt((p[2] - pos[2]) ** 2)
+
+        current_vel = [0,0,0]
+        while dist > 0.1:
+            if dist_x > 0:
+                current_vel[0] += self.acc
+                current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
+            elif dist_x < 0:
+                current_vel[0] -= self.acc
+                current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
+            else:
+                current_vel[0] = 0
+
+            if dist_y > 0:
+                current_vel[1] += self.acc
+                current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
+            elif dist_y < 0:
+                current_vel[1] -= self.acc
+                current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
+            else:
+                current_vel[1] = 0
+
+            if dist_z > 0:
+                current_vel[2] += self.acc
+                current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
+            elif dist_z < 0:
+                current_vel[2] -= self.acc
+                current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
+            else:
+                current_vel[0] = 0
+
+
+            dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
+            self.publish_visual()
         self.position = pos
 
     def publish_visual(self):
@@ -57,8 +100,8 @@ if __name__ == '__main__':
     robot = CopterHandler()
 
 
-    copter.funtionality["set_pos"] = None
-    copter.funtionality["get_pos"] = None
+    copter.funtionality["set_pos"] = robot.set_pos
+    copter.funtionality["get_pos"] = lambda: robot.position
 
     while not rospy.is_shutdown():
         robot.publish_visual()

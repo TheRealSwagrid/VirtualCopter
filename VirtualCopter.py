@@ -24,12 +24,14 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def SetPosition(self, params: dict):
         formatPrint(self, f"Get Position {params}")
-        if self.funtionality["get_pos"] is not None:
+        if self.funtionality["set_pos"] is not None:
             self.position = self.funtionality["set_pos"](params["Position3D"])
         return {"Position3D": self.position}
 
     def GetPosition(self, params: dict):
         formatPrint(self, f"Get Position {params}")
+        if self.funtionality["set_pos"] is not None:
+            self.position = self.funtionality["get_pos"](params["Position3D"])
         return {"Position3D": self.position}
 
     def loop(self):
