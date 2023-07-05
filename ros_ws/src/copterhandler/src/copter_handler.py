@@ -4,10 +4,10 @@ import rospy
 from visualization_msgs.msg import Marker
 from AbstractVirtualCapability import VirtualCapabilityServer
 
-from VirtualCopter import PlacerRobot
+from VirtualCopter import VirtualCopter
 
 
-class RobotHandler:
+class CopterHandler:
     def __init__(self):
         self.position = [0, 0, 2.]
         self.rotation = [0, 0, 0, 1]
@@ -53,10 +53,12 @@ if __name__ == '__main__':
 
     server = VirtualCapabilityServer(int(rospy.get_param('~semantix_port')))
 
-    place_robot = PlacerRobot(server)
-    robot = RobotHandler()
+    copter = VirtualCopter(server)
+    robot = CopterHandler()
 
-    place_robot.funtionality["set_pos_viz"] = None
+
+    copter.funtionality["set_pos"] = None
+    copter.funtionality["get_pos"] = None
 
     while not rospy.is_shutdown():
         robot.publish_visual()
