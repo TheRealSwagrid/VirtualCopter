@@ -18,11 +18,11 @@ RUN apt-get update && apt-get install -y python3-rosinstall python3-rosinstall-g
 # Add Files
 ADD ros_ws /ros_ws
 COPY protocols /etc
-COPY VirtualCopter.py /ros_ws/src/robothandler/src
-COPY AbstractVirtualCapability.py ros_ws/src/robothandler/src
+COPY VirtualCopter.py /ros_ws/src/copterhandler/src
+COPY AbstractVirtualCapability.py ros_ws/src/copterhandler/src
 
 # Build Ros-Pkg and build
 RUN cd /ros_ws && source /opt/ros/noetic/setup.bash && catkin_make
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
-CMD source /ros_ws/devel/setup.bash && roslaunch robothandler robothandler.launch semantix_port:=${semantix_port}
+CMD source /ros_ws/devel/setup.bash && roslaunch copterhandler copterhandler.launch semantix_port:=${semantix_port}
