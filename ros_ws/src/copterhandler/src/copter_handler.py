@@ -55,6 +55,9 @@ class CopterHandler:
             else:
                 current_vel[0] = 0
 
+            self.position = self.position + current_vel
+            pos = self.position
+
             dist_x = math.sqrt((p[0] - pos[0]) ** 2)
             dist_y = math.sqrt((p[1] - pos[1]) ** 2)
             dist_z = math.sqrt((p[2] - pos[2]) ** 2)
