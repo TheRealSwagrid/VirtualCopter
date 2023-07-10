@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from copy import copy
+from time import sleep
 
 import rospy
 import math
@@ -15,7 +17,7 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = .5
+        self.max_vel = .05
         self.acc = 0.004
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
@@ -33,13 +35,13 @@ class CopterHandler:
     def set_pos(self, p: list):
         print("GOOO")
         rospy.logwarn(f"Flying to Position: {p}")
-        pos = self.position
+        pos = copy(self.position)
 
         dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
 
-        dist_x = math.sqrt((p[0] - pos[0]) ** 2)
-        dist_y = math.sqrt((p[1] - pos[1]) ** 2)
-        dist_z = math.sqrt((p[2] - pos[2]) ** 2)
+        dist_x = (p[0] - pos[0])
+        dist_y = (p[1] - pos[1])
+        dist_z = (p[2] - pos[2])
 
         current_vel = [0, 0, 0]
         while dist > 0.1:
@@ -70,19 +72,24 @@ class CopterHandler:
             else:
                 current_vel[0] = 0
 
-            self.position = self.position + current_vel
-            pos = self.position
+            self.position[0] += current_vel[0]
+            self.position[1] += current_vel[1]
+            self.position[2] += current_vel[2]
 
-            dist_x = math.sqrt((p[0] - pos[0]) ** 2)
-            dist_y = math.sqrt((p[1] - pos[1]) ** 2)
-            dist_z = math.sqrt((p[2] - pos[2]) ** 2)
+            pos = copy(self.position)
+
+            dist_x = (p[0] - pos[0])
+            dist_y = (p[1] - pos[1])
+            dist_z = (p[2] - pos[2])
+
             dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
             self.publish_visual()
+            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
 
         self.position = pos
 
     def publish_visual(self):
-        rospy.logwarn("Publishing")
+        rospy.logwarn(f"Publishing {self.position}")
         print("GOOOO")
         marker = Marker()
         marker.id = int(rospy.get_param('~semantix_port'))
@@ -143,5 +150,6 @@ if __name__ == '__main__':
     robot.publish_visual()
 
     while not rospy.is_shutdown():
-        #robot.publish_visual()
+        # robot.publish_visual()
+
         rate.sleep()
