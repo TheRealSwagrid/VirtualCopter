@@ -27,6 +27,7 @@ class CopterHandler:
     def set_pos(self, p: list):
         rospy.logwarn(f"Flying to Position: {p}")
         pos = self.position
+
         dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
 
         dist_x = math.sqrt((p[0] - pos[0]) ** 2)
