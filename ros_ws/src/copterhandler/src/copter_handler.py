@@ -17,8 +17,8 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = .05
-        self.acc = 0.004
+        self.max_vel = 0.001
+        self.acc = 0.0001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
@@ -33,7 +33,7 @@ class CopterHandler:
         self.name = name
 
     def set_pos(self, p: list):
-        print("GOOO")
+
         rospy.logwarn(f"Flying to Position: {p}")
         pos = copy(self.position)
 
@@ -49,7 +49,7 @@ class CopterHandler:
                 current_vel[0] += self.acc
                 current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
             elif dist_x < 0:
-                current_vel[0] -= self.acc
+                current_vel[0] -= self.acc, 0
                 current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
             else:
                 current_vel[0] = 0
@@ -84,13 +84,12 @@ class CopterHandler:
 
             dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
             self.publish_visual()
-            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+            sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
 
         self.position = pos
 
     def publish_visual(self):
         rospy.logwarn(f"Publishing {self.position}")
-        print("GOOOO")
         marker = Marker()
         marker.id = int(rospy.get_param('~semantix_port'))
         marker.header.frame_id = "world"
@@ -150,6 +149,6 @@ if __name__ == '__main__':
     robot.publish_visual()
 
     while not rospy.is_shutdown():
-        # robot.publish_visual()
+        #robot.publish_visual()
 
         rate.sleep()
