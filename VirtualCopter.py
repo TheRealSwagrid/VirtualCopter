@@ -17,8 +17,8 @@ class VirtualCopter(AbstractVirtualCapability):
         self.acc = 0.002
 
     def FlyToPosition(self, params: dict):
-        formatPrint(self, f"Get Position {params}")
-        if self.funtionality["get_pos"] is not None:
+        formatPrint(self, f"Set Position {params}")
+        if self.funtionality["set_pos"] is not None:
             self.position = self.funtionality["set_pos"](params["Position3D"])
         return {"Position3D": self.position}
 
