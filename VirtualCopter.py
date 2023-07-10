@@ -43,7 +43,7 @@ class VirtualCopter(AbstractVirtualCapability):
     def Gettf_name(self, params: dict):
         tf_name = "NO_ROS_CONNECTION"
         if self.funtionality["get_name"] is not None:
-            tf_name = self.position = self.funtionality["get_name"](tf_name)
+            tf_name = self.position = self.funtionality["get_name"]()
         return {"SimpleStringParameter": tf_name}
 
     def loop(self):
