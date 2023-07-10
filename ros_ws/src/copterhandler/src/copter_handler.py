@@ -31,7 +31,7 @@ class CopterHandler:
         self.name = name
 
     def set_pos(self, p: list):
-
+        print("GOOO")
         rospy.logwarn(f"Flying to Position: {p}")
         pos = self.position
 
