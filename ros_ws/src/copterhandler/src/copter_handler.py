@@ -21,6 +21,12 @@ class CopterHandler:
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
 
+    def get_position(self):
+        return self.position
+
+    def get_tf_name(self):
+        return self.name
+
     def set_name(self, name):
         self.name = name
 
@@ -118,10 +124,10 @@ if __name__ == '__main__':
     robot = CopterHandler()
 
     copter.funtionality["set_pos"] = robot.set_pos
-    copter.funtionality["get_pos"] = lambda: robot.position
+    copter.funtionality["get_pos"] = robot.get_position
 
     copter.funtionality["set_name"] = robot.set_name
-    copter.funtionality["get_name"] = lambda: robot.name
+    copter.funtionality["get_name"] = robot.get_tf_name
 
     copter.start()
 
