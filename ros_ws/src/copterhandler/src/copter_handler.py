@@ -31,6 +31,7 @@ class CopterHandler:
         self.name = name
 
     def set_pos(self, p: list):
+
         rospy.logwarn(f"Flying to Position: {p}")
         pos = self.position
 
@@ -81,6 +82,8 @@ class CopterHandler:
         self.position = pos
 
     def publish_visual(self):
+        rospy.logwarn("Publishing")
+        print("GOOOO")
         marker = Marker()
         marker.id = int(rospy.get_param('~semantix_port'))
         marker.header.frame_id = "world"
