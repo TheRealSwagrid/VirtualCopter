@@ -2,6 +2,7 @@
 
 import rospy
 import math
+import tf
 from visualization_msgs.msg import Marker
 from AbstractVirtualCapability import VirtualCapabilityServer
 
@@ -17,6 +18,11 @@ class CopterHandler:
         self.max_vel = .5
         self.acc = 0.004
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
+        self.br = tf.TransformBroadcaster()
+        self.name = "copter"
+
+    def set_name(self, name):
+        self.name = name
 
     def set_pos(self, p: list):
         pos = self.position
@@ -26,7 +32,7 @@ class CopterHandler:
         dist_y = math.sqrt((p[1] - pos[1]) ** 2)
         dist_z = math.sqrt((p[2] - pos[2]) ** 2)
 
-        current_vel = [0,0,0]
+        current_vel = [0, 0, 0]
         while dist > 0.1:
             if dist_x > 0:
                 current_vel[0] += self.acc
@@ -94,6 +100,10 @@ class CopterHandler:
 
         self.pub.publish(marker)
 
+        # TF
+        self.br.sendTransform((self.position[0], self.position[1], self.position[2]),
+                              tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), self.name, "world")
+
 
 if __name__ == '__main__':
     rospy.init_node('rosnode')
@@ -104,9 +114,13 @@ if __name__ == '__main__':
     copter = VirtualCopter(server)
     robot = CopterHandler()
 
-
     copter.funtionality["set_pos"] = robot.set_pos
     copter.funtionality["get_pos"] = lambda: robot.position
+
+    copter.funtionality["set_name"] = robot.set_name
+    copter.funtionality["get_name"] = lambda: robot.name
+
+    copter.start()
 
     while not rospy.is_shutdown():
         robot.publish_visual()
