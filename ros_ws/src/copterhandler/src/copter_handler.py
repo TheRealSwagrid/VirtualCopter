@@ -121,10 +121,14 @@ if __name__ == '__main__':
     rospy.init_node('rosnode')
     rate = rospy.Rate(10)
 
+    rospy.logwarn("Starting")
+
     server = VirtualCapabilityServer(int(rospy.get_param('~semantix_port')))
 
     copter = VirtualCopter(server)
     robot = CopterHandler()
+
+    rospy.logwarn("Setting functionality")
 
     copter.funtionality["set_pos"] = robot.set_pos
     copter.funtionality["get_pos"] = robot.get_position
@@ -132,8 +136,12 @@ if __name__ == '__main__':
     copter.funtionality["set_name"] = robot.set_name
     copter.funtionality["get_name"] = robot.get_tf_name
 
+    rospy.logwarn("Starting VirtualCopter Semantix")
     copter.start()
 
+    rospy.logwarn("Publishing")
+    robot.publish_visual()
+
     while not rospy.is_shutdown():
-        robot.publish_visual()
+        #robot.publish_visual()
         rate.sleep()
