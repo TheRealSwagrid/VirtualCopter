@@ -12,7 +12,7 @@ class VirtualCopter(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.position = [0., 0., 0.]
-        self.funtionality = {"get_pos": None, "set_pos": None}
+        self.funtionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None}
         self.max_vel = 0.25
         self.acc = 0.002
 
