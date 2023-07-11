@@ -96,7 +96,6 @@ class CopterHandler:
         except Exception as e:
             exc_info = sys.exc_info()
             traceback.print_exception(*exc_info)
-            formatPrint(self, repr(e))
 
     def publish_visual(self):
         rospy.logwarn(f"Publishing {self.position}")
