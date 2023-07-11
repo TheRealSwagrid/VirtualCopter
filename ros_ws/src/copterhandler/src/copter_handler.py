@@ -55,6 +55,8 @@ class CopterHandler:
                 self.br.sendTransform((goal[0], goal[1], goal[2]),
                                       tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal",
                                       "world")
+
+
                 if dist_x > self.max_vel*(self.max_vel/self.acc):
                     current_vel[0] += self.acc
                     current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
@@ -87,7 +89,6 @@ class CopterHandler:
                     pass
                 if abs(dist_z) < 0.005:
                     current_vel[2] = 0
-
 
                 self.position[0] += current_vel[0]
                 self.position[1] += current_vel[1]
