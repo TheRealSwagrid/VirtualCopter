@@ -87,8 +87,8 @@ class CopterHandler:
                 else:
                     pass
 
-                self.position[0] += current_vel[0]
-                self.position[1] += current_vel[1]
+                #self.position[0] += current_vel[0]
+                #self.position[1] += current_vel[1]
                 self.position[2] += current_vel[2]
 
                 pos = copy(self.position)
