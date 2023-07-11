@@ -42,12 +42,16 @@ class CopterHandler:
         self.br.sendTransform((goal[0], goal[1], goal[2]),
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
 
-        dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
 
-        while dist < 0.1:
+        while True:
             position = np.array(self.position)
             goal = np.array(goal)
             vector = goal - position
+
+            if np.linalg.norm(vector) < 0.1:
+                self.position = list(goal)
+                self.publish_visual()
+                break
 
             current_vel = self.max_vel * vector / np.linalg.norm(vector)
             self.position[0] += current_vel[0]
@@ -57,74 +61,7 @@ class CopterHandler:
             self.publish_visual()
             sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
 
-            dist = math.sqrt((goal[0] - self.position[0]) ** 2 + (goal[1] - self.position[1]) ** 2 + (goal[2] - self.position[2]) ** 2)
 
-
-            """
-            dist_x = (goal[0] - pos[0])
-            dist_y = (goal[1] - pos[1])
-            dist_z = (goal[2] - pos[2])
-            
-            current_vel = [0, 0, 0]
-            while dist > 0.1:
-                self.br.sendTransform((goal[0], goal[1], goal[2]),
-                                      tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal",
-                                      "world")
-
-
-                if dist_x > self.max_vel*(self.max_vel/self.acc):
-                    current_vel[0] += self.acc
-                    current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
-                elif dist_x < self.max_vel*(self.max_vel/self.acc):
-                    current_vel[0] -= self.acc
-                    current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
-                else:
-                    pass
-                if abs(dist_x) < 0.005:
-                    current_vel[0] = 0
-
-                if dist_y > self.max_vel*(self.max_vel/self.acc):
-                    current_vel[1] += self.acc
-                    current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
-                elif dist_y < self.max_vel*(self.max_vel/self.acc):
-                    current_vel[1] -= self.acc
-                    current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
-                else:
-                    pass
-                if abs(dist_y) < 0.005:
-                    current_vel[1] = 0
-
-                if dist_z > self.max_vel*(self.max_vel/self.acc):
-                    current_vel[2] += self.acc
-                    current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
-                elif dist_z < self.max_vel*(self.max_vel/self.acc):
-                    current_vel[2] -= self.acc
-                    current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
-                else:
-                    pass
-                if abs(dist_z) < 0.005:
-                    current_vel[2] = 0
-
-                self.position[0] += current_vel[0]
-                self.position[1] += current_vel[1]
-                self.position[2] += current_vel[2]
-
-                pos = copy(self.position)
-
-                dist_x = (goal[0] - pos[0])
-                dist_y = (goal[1] - pos[1])
-                dist_z = (goal[2] - pos[2])
-
-                dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
-                rospy.logwarn(f"Flying with vel {current_vel}, dist: {dist}\nX:{dist_x},Y:{dist_y},Z:{dist_z}")
-                self.publish_visual()
-                sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
-
-            self.position = goal
-        except Exception as e:
-            exc_info = sys.exc_info()
-            traceback.print_exception(*exc_info)
-            """
 
     def publish_visual(self):
         #rospy.logwarn(f"Publishing {self.position}")
@@ -188,5 +125,4 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         #robot.publish_visual()
-
         rate.sleep()
