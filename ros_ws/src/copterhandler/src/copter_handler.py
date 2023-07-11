@@ -7,6 +7,7 @@ import traceback
 import rospy
 import math
 import tf
+import numpy as np
 from visualization_msgs.msg import Marker
 from AbstractVirtualCapability import VirtualCapabilityServer
 
@@ -45,9 +46,9 @@ class CopterHandler:
 
             dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
 
-            dist_x = -(goal[0] - pos[0])
-            dist_y = -(goal[1] - pos[1])
-            dist_z = -(goal[2] - pos[2])
+            dist_x = (goal[0] - pos[0])
+            dist_y = (goal[1] - pos[1])
+            dist_z = (goal[2] - pos[2])
 
             current_vel = [0, 0, 0]
             while dist > 0.1:
