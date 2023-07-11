@@ -76,16 +76,18 @@ class CopterHandler:
                 else:
                     pass
 
-                if dist_z > 1.:
+                if dist_z > 0.:
                     current_vel[2] += self.acc
                     current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
-                elif dist_z < 1.:
+                elif dist_z < 0.:
                     current_vel[2] -= self.acc
                     current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
-                elif abs(dist_z) < 0.01:
-                    current_vel[2] = 0
                 else:
                     pass
+
+                if abs(dist_z) < 0.01:
+                    current_vel[2] = 0
+
 
                 #self.position[0] += current_vel[0]
                 #self.position[1] += current_vel[1]
