@@ -95,6 +95,7 @@ class CopterHandler:
                 dist_z = (goal[2] - pos[2])
 
                 dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
+                rospy.logwarn(f"Flying with vel {current_vel}")
                 self.publish_visual()
                 sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
 
@@ -104,7 +105,7 @@ class CopterHandler:
             traceback.print_exception(*exc_info)
 
     def publish_visual(self):
-        rospy.logwarn(f"Publishing {self.position}")
+        #rospy.logwarn(f"Publishing {self.position}")
         marker = Marker()
         marker.id = int(rospy.get_param('~semantix_port'))
         marker.header.frame_id = "world"
