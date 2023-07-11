@@ -19,8 +19,8 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = 0.01
-        self.acc = 0.0005
+        self.max_vel = 0.001
+        self.acc = 0.00001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
