@@ -55,7 +55,7 @@ class CopterHandler:
                     current_vel[0] += self.acc
                     current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
                 elif dist_x < 0:
-                    current_vel[0] -= self.acc, 0
+                    current_vel[0] -= self.acc
                     current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
                 else:
                     current_vel[0] = 0
