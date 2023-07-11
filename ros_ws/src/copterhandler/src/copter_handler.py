@@ -19,8 +19,8 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = 1.
-        self.acc = 0.01
+        self.max_vel = .1
+        self.acc = 0.001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
@@ -100,7 +100,7 @@ class CopterHandler:
                 dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
                 rospy.logwarn(f"Flying with vel {current_vel}, dist: {dist}\nX:{dist_x},Y:{dist_y},Z:{dist_z}")
                 self.publish_visual()
-                #sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
+                sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
 
             self.position = goal
         except Exception as e:
