@@ -51,12 +51,13 @@ class CopterHandler:
 
             current_vel = [0, 0, 0]
             while dist > 0.1:
+
                 if dist_x > 0.2:
                     current_vel[0] += self.acc
-                    current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
+                    #current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
                 elif dist_x < 0.2:
                     current_vel[0] -= self.acc
-                    current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
+                    #current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
                 elif abs(dist_x) < 0.01:
                     current_vel[0] = 0
                 else:
@@ -64,10 +65,10 @@ class CopterHandler:
 
                 if dist_y > 0.2:
                     current_vel[1] += self.acc
-                    current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
+                    #current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
                 elif dist_y < 0.2:
                     current_vel[1] -= self.acc
-                    current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
+                    #current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
                 elif abs(dist_y) < 0.01:
                     current_vel[1] = 0
                 else:
@@ -75,10 +76,10 @@ class CopterHandler:
 
                 if dist_z > 0.2:
                     current_vel[2] += self.acc
-                    current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
+                    #current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
                 elif dist_z < 0.2:
                     current_vel[2] -= self.acc
-                    current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
+                   # current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
                 elif abs(dist_z) < 0.01:
                     current_vel[2] = 0
                 else:
