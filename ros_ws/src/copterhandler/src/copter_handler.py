@@ -32,16 +32,20 @@ class CopterHandler:
     def set_name(self, name):
         self.name = name
 
-    def set_pos(self, p: list):
+    def set_pos(self, goal: list):
 
-        rospy.logwarn(f"Flying to Position: {p}")
+        rospy.logwarn(f"Flying to Position: {goal}")
+
+        self.br.sendTransform((goal[0], goal[1], goal[2]),
+                              tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
+
         pos = copy(self.position)
 
-        dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
+        dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
 
-        dist_x = (p[0] - pos[0])
-        dist_y = (p[1] - pos[1])
-        dist_z = (p[2] - pos[2])
+        dist_x = (goal[0] - pos[0])
+        dist_y = (goal[1] - pos[1])
+        dist_z = (goal[2] - pos[2])
 
         current_vel = [0, 0, 0]
         while dist > 0.1:
@@ -78,11 +82,11 @@ class CopterHandler:
 
             pos = copy(self.position)
 
-            dist_x = (p[0] - pos[0])
-            dist_y = (p[1] - pos[1])
-            dist_z = (p[2] - pos[2])
+            dist_x = (goal[0] - pos[0])
+            dist_y = (goal[1] - pos[1])
+            dist_z = (goal[2] - pos[2])
 
-            dist = math.sqrt((p[0] - pos[0]) ** 2 + (p[1] - pos[1]) ** 2 + (p[2] - pos[2]) ** 2)
+            dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
             self.publish_visual()
             sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
 
