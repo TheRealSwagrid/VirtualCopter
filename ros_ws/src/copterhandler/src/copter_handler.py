@@ -19,8 +19,8 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = 0.001
-        self.acc = 0.00001
+        self.max_vel = 0.5
+        self.acc = 0.001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
@@ -51,13 +51,15 @@ class CopterHandler:
 
             current_vel = [0, 0, 0]
             while dist > 0.1:
-
+                self.br.sendTransform((goal[0], goal[1], goal[2]),
+                                      tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal",
+                                      "world")
                 if dist_x > 0.2:
                     current_vel[0] += self.acc
-                    #current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
+                    current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
                 elif dist_x < 0.2:
                     current_vel[0] -= self.acc
-                    #current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
+                    current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
                 elif abs(dist_x) < 0.01:
                     current_vel[0] = 0
                 else:
@@ -65,10 +67,10 @@ class CopterHandler:
 
                 if dist_y > 0.2:
                     current_vel[1] += self.acc
-                    #current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
+                    current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
                 elif dist_y < 0.2:
                     current_vel[1] -= self.acc
-                    #current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
+                    current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
                 elif abs(dist_y) < 0.01:
                     current_vel[1] = 0
                 else:
@@ -76,10 +78,10 @@ class CopterHandler:
 
                 if dist_z > 0.2:
                     current_vel[2] += self.acc
-                    #current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
+                    current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
                 elif dist_z < 0.2:
                     current_vel[2] -= self.acc
-                   # current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
+                    current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
                 elif abs(dist_z) < 0.01:
                     current_vel[2] = 0
                 else:
