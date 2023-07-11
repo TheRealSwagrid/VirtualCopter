@@ -19,8 +19,8 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
-        self.max_vel = 0.001
-        self.acc = 0.0001
+        self.max_vel = 0.01
+        self.acc = 0.0005
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
@@ -51,28 +51,28 @@ class CopterHandler:
 
             current_vel = [0, 0, 0]
             while dist > 0.1:
-                if dist_x > 0:
+                if dist_x > 0.01:
                     current_vel[0] += self.acc
                     current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
-                elif dist_x < 0:
+                elif dist_x < 0.01:
                     current_vel[0] -= self.acc
                     current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
                 else:
                     current_vel[0] = 0
 
-                if dist_y > 0:
+                if dist_y > 0.01:
                     current_vel[1] += self.acc
                     current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
-                elif dist_y < 0:
+                elif dist_y < 0.01:
                     current_vel[1] -= self.acc
                     current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
                 else:
                     current_vel[1] = 0
 
-                if dist_z > 0:
+                if dist_z > 0.01:
                     current_vel[2] += self.acc
                     current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
-                elif dist_z < 0:
+                elif dist_z < 0.01:
                     current_vel[2] -= self.acc
                     current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
                 else:
