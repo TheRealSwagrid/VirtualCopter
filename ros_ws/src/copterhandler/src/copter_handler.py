@@ -2,6 +2,8 @@
 from copy import copy
 from time import sleep
 
+import sys
+import traceback
 import rospy
 import math
 import tf
@@ -38,59 +40,63 @@ class CopterHandler:
 
         self.br.sendTransform((goal[0], goal[1], goal[2]),
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
-
-        pos = copy(self.position)
-
-        dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
-
-        dist_x = (goal[0] - pos[0])
-        dist_y = (goal[1] - pos[1])
-        dist_z = (goal[2] - pos[2])
-
-        current_vel = [0, 0, 0]
-        while dist > 0.1:
-            if dist_x > 0:
-                current_vel[0] += self.acc
-                current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
-            elif dist_x < 0:
-                current_vel[0] -= self.acc, 0
-                current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
-            else:
-                current_vel[0] = 0
-
-            if dist_y > 0:
-                current_vel[1] += self.acc
-                current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
-            elif dist_y < 0:
-                current_vel[1] -= self.acc
-                current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
-            else:
-                current_vel[1] = 0
-
-            if dist_z > 0:
-                current_vel[2] += self.acc
-                current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
-            elif dist_z < 0:
-                current_vel[2] -= self.acc
-                current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
-            else:
-                current_vel[0] = 0
-
-            self.position[0] += current_vel[0]
-            self.position[1] += current_vel[1]
-            self.position[2] += current_vel[2]
-
+        try:
             pos = copy(self.position)
+
+            dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
 
             dist_x = (goal[0] - pos[0])
             dist_y = (goal[1] - pos[1])
             dist_z = (goal[2] - pos[2])
 
-            dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
-            self.publish_visual()
-            sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
+            current_vel = [0, 0, 0]
+            while dist > 0.1:
+                if dist_x > 0:
+                    current_vel[0] += self.acc
+                    current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
+                elif dist_x < 0:
+                    current_vel[0] -= self.acc, 0
+                    current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
+                else:
+                    current_vel[0] = 0
 
-        self.position = pos
+                if dist_y > 0:
+                    current_vel[1] += self.acc
+                    current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
+                elif dist_y < 0:
+                    current_vel[1] -= self.acc
+                    current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
+                else:
+                    current_vel[1] = 0
+
+                if dist_z > 0:
+                    current_vel[2] += self.acc
+                    current_vel[2] = self.max_vel if current_vel[2] > self.max_vel else current_vel[2]
+                elif dist_z < 0:
+                    current_vel[2] -= self.acc
+                    current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
+                else:
+                    current_vel[0] = 0
+
+                self.position[0] += current_vel[0]
+                self.position[1] += current_vel[1]
+                self.position[2] += current_vel[2]
+
+                pos = copy(self.position)
+
+                dist_x = (goal[0] - pos[0])
+                dist_y = (goal[1] - pos[1])
+                dist_z = (goal[2] - pos[2])
+
+                dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
+                self.publish_visual()
+                sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
+
+            self.position = pos
+        except Exception as e:
+            exc_info = sys.exc_info()
+            traceback.print_exception(*exc_info)
+            formatPrint(self, repr(e))
 
     def publish_visual(self):
         rospy.logwarn(f"Publishing {self.position}")
