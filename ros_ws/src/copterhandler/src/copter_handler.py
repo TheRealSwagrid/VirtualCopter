@@ -54,10 +54,10 @@ class CopterHandler:
                 self.br.sendTransform((goal[0], goal[1], goal[2]),
                                       tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal",
                                       "world")
-                if dist_x > 1.2:
+                if dist_x > self.max_vel*(self.max_vel/self.acc):
                     current_vel[0] += self.acc
                     current_vel[0] = self.max_vel if current_vel[0] > self.max_vel else current_vel[0]
-                elif dist_x < 0.2:
+                elif dist_x < self.max_vel*(self.max_vel/self.acc):
                     current_vel[0] -= self.acc
                     current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
                 elif abs(dist_x) < 0.01:
@@ -65,10 +65,10 @@ class CopterHandler:
                 else:
                     pass
 
-                if dist_y > 0.2:
+                if dist_y > self.max_vel*(self.max_vel/self.acc):
                     current_vel[1] += self.acc
                     current_vel[1] = self.max_vel if current_vel[1] > self.max_vel else current_vel[1]
-                elif dist_y < 0.2:
+                elif dist_y < self.max_vel*(self.max_vel/self.acc):
                     current_vel[1] -= self.acc
                     current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
                 elif abs(dist_y) < 0.01:
