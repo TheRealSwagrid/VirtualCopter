@@ -60,10 +60,10 @@ class CopterHandler:
                 elif dist_x < self.max_vel*(self.max_vel/self.acc):
                     current_vel[0] -= self.acc
                     current_vel[0] = self.max_vel if -current_vel[0] > self.max_vel else current_vel[0]
-                elif abs(dist_x) < 0.01:
-                    current_vel[0] = 0
                 else:
                     pass
+                if abs(dist_x) < 0.005:
+                    current_vel[0] = 0
 
                 if dist_y > self.max_vel*(self.max_vel/self.acc):
                     current_vel[1] += self.acc
@@ -71,10 +71,10 @@ class CopterHandler:
                 elif dist_y < self.max_vel*(self.max_vel/self.acc):
                     current_vel[1] -= self.acc
                     current_vel[1] = self.max_vel if -current_vel[1] > self.max_vel else current_vel[1]
-                elif abs(dist_y) < 0.01:
-                    current_vel[1] = 0
                 else:
                     pass
+                if abs(dist_y) < 0.005:
+                    current_vel[1] = 0
 
                 if dist_z > self.max_vel*(self.max_vel/self.acc):
                     current_vel[2] += self.acc
@@ -84,8 +84,7 @@ class CopterHandler:
                     current_vel[2] = self.max_vel if -current_vel[2] > self.max_vel else current_vel[2]
                 else:
                     pass
-
-                if abs(dist_z) < 0.01:
+                if abs(dist_z) < 0.005:
                     current_vel[2] = 0
 
 
