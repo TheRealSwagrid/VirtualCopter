@@ -41,26 +41,24 @@ class CopterHandler:
 
         self.br.sendTransform((goal[0], goal[1], goal[2]),
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
-        try:
-            pos = copy(self.position)
 
-            dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
+        dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
 
-            position = np.array(pos)
+        while dist < 0.1:
+            position = np.array(self.position)
             goal = np.array(goal)
-
             vector = goal - position
 
+            current_vel = self.max_vel * vector / np.linalg.norm(vector)
+            self.position[0] += current_vel[0]
+            self.position[1] += current_vel[1]
+            self.position[2] += current_vel[2]
 
+            self.publish_visual()
+            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
 
-            while dist < 0.1:
-                current_vel = self.max_vel * vector / np.linalg.norm(vector)
-                self.position[0] += current_vel[0]
-                self.position[1] += current_vel[1]
-                self.position[2] += current_vel[2]
+            dist = math.sqrt((goal[0] - self.position[0]) ** 2 + (goal[1] - self.position[1]) ** 2 + (goal[2] - self.position[2]) ** 2)
 
-                self.publish_visual()
-                sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
 
             """
             dist_x = (goal[0] - pos[0])
