@@ -122,5 +122,6 @@ if __name__ == '__main__':
     robot.publish_visual()
 
     while not rospy.is_shutdown():
-        #robot.publish_visual()
+        robot.br.sendTransform(robot.position,
+                              tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), robot.name, "world")
         rate.sleep()
