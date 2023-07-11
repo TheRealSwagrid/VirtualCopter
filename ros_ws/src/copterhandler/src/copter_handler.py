@@ -95,7 +95,7 @@ class CopterHandler:
                 dist_z = (goal[2] - pos[2])
 
                 dist = math.sqrt((goal[0] - pos[0]) ** 2 + (goal[1] - pos[1]) ** 2 + (goal[2] - pos[2]) ** 2)
-                rospy.logwarn(f"Flying with vel {current_vel}")
+                rospy.logwarn(f"Flying with vel {current_vel}, dist: {dist}\nX:{dist_x},Y:{dist_y},Z:{dist_z}")
                 self.publish_visual()
                 sleep((abs(current_vel[0])+ abs(current_vel[1])+abs(current_vel[2])))
 
