@@ -16,7 +16,7 @@ from VirtualCopter import VirtualCopter
 
 class CopterHandler:
     def __init__(self):
-        self.position = [0, 0, 2.]
+        self.position = np.array([0, 0, 2.])
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
@@ -27,7 +27,7 @@ class CopterHandler:
         self.name = "copter"
 
     def get_position(self):
-        return self.position
+        return list(self.position)
 
     def get_tf_name(self):
         return self.name
@@ -44,19 +44,17 @@ class CopterHandler:
 
 
         while True:
-            position = np.array(self.position)
             goal = np.array(goal)
-            vector = goal - position
+            vector = goal - self.position
 
             if np.linalg.norm(vector) < 0.1:
-                self.position = list(goal)
+                self.position = goal
                 self.publish_visual()
                 break
 
             current_vel = self.max_vel * vector / np.linalg.norm(vector)
-            self.position[0] += current_vel[0]
-            self.position[1] += current_vel[1]
-            self.position[2] += current_vel[2]
+            self.position += current_vel
+
 
             self.publish_visual()
             sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
@@ -94,7 +92,7 @@ class CopterHandler:
         self.pub.publish(marker)
 
         # TF
-        self.br.sendTransform((self.position[0], self.position[1], self.position[2]),
+        self.br.sendTransform(self.position,
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), self.name, "world")
 
 
