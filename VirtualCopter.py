@@ -60,6 +60,12 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def RotateAroundAxis(self, params: dict):
         axis = params["Axis"]
+        if axis == 'z':
+            axis = [0,0,1]
+        elif axis == 'y':
+            axis = [0,1,0]
+        elif axis == 'x':
+            axis = [1, 0, 0]
         degree = params["SimpleDoubleParameter"]
         if self.funtionality["get_name"] is not None:
             quat = self.funtionality["rotate"](axis, degree)
