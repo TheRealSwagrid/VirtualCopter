@@ -62,7 +62,8 @@ class VirtualCopter(AbstractVirtualCapability):
         axis = params["Axis"]
         degree = params["SimpleDoubleParameter"]
         if self.funtionality["get_name"] is not None:
-            self.funtionality["rotate"](axis, degree)
+            quat = self.funtionality["rotate"](axis, degree)
+        return {"Quaternion": quat}
 
 
     def loop(self):

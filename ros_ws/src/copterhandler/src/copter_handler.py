@@ -29,6 +29,7 @@ class CopterHandler:
     def rotate(self, axis, deg):
         theta = np.deg2rad(deg)
         self.rotation = list(quaternion_about_axis(theta, axis))
+        return self.rotation
 
     def get_position(self):
         return list(self.position)
