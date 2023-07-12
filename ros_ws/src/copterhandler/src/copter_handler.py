@@ -1,21 +1,18 @@
 #!/usr/bin/env python
-from copy import copy
-from time import sleep
-
-import sys
-import traceback
-import rospy
-import math
-import tf
 import numpy as np
-from visualization_msgs.msg import Marker
+import rospy
+import tf
+from tf.transformations import euler_from_quaternion, quaternion_about_axis
 from AbstractVirtualCapability import VirtualCapabilityServer
+from time import sleep
+from visualization_msgs.msg import Marker
 
 from VirtualCopter import VirtualCopter
 
 
 class CopterHandler:
     def __init__(self):
+
         self.position = np.array([0, 0, 2.])
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
@@ -25,6 +22,13 @@ class CopterHandler:
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = "copter"
+
+    def set_rot(self, rot):
+        self.rotation = rot
+
+    def rotate(self, axis, deg):
+        theta = np.deg2rad(deg)
+        self.rotation = list(quaternion_about_axis(theta, axis))
 
     def get_position(self):
         return list(self.position)
@@ -42,7 +46,6 @@ class CopterHandler:
         self.br.sendTransform((goal[0], goal[1], goal[2]),
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
 
-
         while True:
             goal = np.array(goal)
             vector = goal - self.position
@@ -55,14 +58,11 @@ class CopterHandler:
             current_vel = self.max_vel * vector / np.linalg.norm(vector)
             self.position += current_vel
 
-
             self.publish_visual()
             sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
 
-
-
     def publish_visual(self):
-        #rospy.logwarn(f"Publishing {self.position}")
+        # rospy.logwarn(f"Publishing {self.position}")
         marker = Marker()
         marker.id = int(rospy.get_param('~semantix_port'))
         marker.header.frame_id = "world"
@@ -115,6 +115,10 @@ if __name__ == '__main__':
     copter.funtionality["set_name"] = robot.set_name
     copter.funtionality["get_name"] = robot.get_tf_name
 
+    copter.funtionality["get_rot"] = lambda: robot.rotation
+    copter.funtionality["set_rot"] = robot.set_rot
+    copter.funtionality["rotate"] = robot.rotate
+
     rospy.logwarn("Starting VirtualCopter Semantix")
     copter.start()
 
@@ -123,5 +127,5 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         robot.br.sendTransform(robot.position,
-                              tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), robot.name, "world")
+                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), robot.name, "world")
         rate.sleep()

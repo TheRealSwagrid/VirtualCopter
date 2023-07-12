@@ -12,7 +12,7 @@ class VirtualCopter(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.position = [0., 0., 0.]
-        self.funtionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None}
+        self.funtionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None, "set_rot": None, "rotate":None}
         self.max_vel = 0.25
         self.acc = 0.002
 
@@ -45,6 +45,25 @@ class VirtualCopter(AbstractVirtualCapability):
         if self.funtionality["get_name"] is not None:
             tf_name = self.position = self.funtionality["get_name"]()
         return {"SimpleStringParameter": tf_name}
+
+    def SetRotation(self, params: dict):
+        quat = params["Quaternion"]
+        if self.funtionality["set_rot"] is not None:
+             self.funtionality["set_rot"](quat)
+        return {"Quaternion": quat}
+
+    def GetRotation(self, params: dict):
+        quat = [0,0,0,0]
+        if self.funtionality["get_name"] is not None:
+            quat = self.funtionality["get_rot"]()
+        return {"Quaternion": quat}
+
+    def RotateAroundAxis(self, params: dict):
+        axis = params["Axis"]
+        degree = params["SimpleDoubleParameter"]
+        if self.funtionality["get_name"] is not None:
+            self.funtionality["rotate"](axis, degree)
+
 
     def loop(self):
         pass
