@@ -100,7 +100,7 @@ class CopterHandler:
 
 if __name__ == '__main__':
     rospy.init_node('rosnode')
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(30)
 
     rospy.logwarn("Starting")
 
