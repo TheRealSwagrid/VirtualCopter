@@ -95,7 +95,7 @@ class CopterHandler:
 
         # TF
         self.br.sendTransform(self.position,
-                              tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), self.name, "world")
+                              self.rotation, rospy.Time.now(), self.name, "world")
 
 
 if __name__ == '__main__':
