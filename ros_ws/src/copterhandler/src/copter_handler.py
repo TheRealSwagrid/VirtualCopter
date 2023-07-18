@@ -55,7 +55,7 @@ class CopterHandler:
             if np.linalg.norm(vector) < 0.1:
                 self.position = goal
                 self.publish_visual()
-                break
+                return self.position
 
             current_vel = self.max_vel * vector / np.linalg.norm(vector)
             self.position += current_vel
