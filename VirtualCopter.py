@@ -16,6 +16,10 @@ class VirtualCopter(AbstractVirtualCapability):
         self.max_vel = 0.25
         self.acc = 0.002
 
+    def TransferBlock(self, params: dict):
+
+        return params
+
     def FlyToPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
         if self.funtionality["set_pos"] is not None:
@@ -31,7 +35,7 @@ class VirtualCopter(AbstractVirtualCapability):
     def GetPosition(self, params: dict):
         formatPrint(self, f"Get Position {params}")
         if self.funtionality["set_pos"] is not None:
-            self.position = self.funtionality["get_pos"](params["Position3D"])
+            self.position = self.funtionality["get_pos"]()
         return {"Position3D": self.position}
 
     def Settf_name(self, params: dict):
