@@ -21,7 +21,7 @@ class CopterHandler:
         self.acc = 0.00001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
-        self.name = "copter"
+        self.name = f"copter@{int(rospy.get_param('~semantix_port'))}"
 
     def set_rot(self, rot):
         self.rotation = rot
@@ -114,15 +114,15 @@ if __name__ == '__main__':
 
     rospy.logwarn("Setting functionality")
 
-    copter.funtionality["set_pos"] = robot.set_pos
-    copter.funtionality["get_pos"] = robot.get_position
+    copter.functionality["set_pos"] = robot.set_pos
+    copter.functionality["get_pos"] = robot.get_position
 
-    copter.funtionality["set_name"] = robot.set_name
-    copter.funtionality["get_name"] = robot.get_tf_name
+    copter.functionality["set_name"] = robot.set_name
+    copter.functionality["get_name"] = robot.get_tf_name
 
-    copter.funtionality["get_rot"] = lambda: robot.rotation
-    copter.funtionality["set_rot"] = robot.set_rot
-    copter.funtionality["rotate"] = robot.rotate
+    copter.functionality["get_rot"] = lambda: robot.rotation
+    copter.functionality["set_rot"] = robot.set_rot
+    copter.functionality["rotate"] = robot.rotate
 
     rospy.logwarn("Starting VirtualCopter Semantix")
     copter.start()
