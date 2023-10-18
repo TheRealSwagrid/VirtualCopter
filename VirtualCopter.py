@@ -84,7 +84,7 @@ class VirtualCopter(AbstractVirtualCapability):
     def SetDirection(self, params: dict):
         new_direction = params["Vector3"]
         self.direction = new_direction
-        return self.GetDirection()
+        return self.GetDirection(params)
 
     def loop(self):
         pass
