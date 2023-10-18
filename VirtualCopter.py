@@ -14,6 +14,7 @@ class VirtualCopter(AbstractVirtualCapability):
         self.position = [0., 0., 0.]
         self.functionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None,
                               "set_rot": None, "rotate": None}
+        self.direction = [1., 1., 1.]
         self.max_vel = 0.25
         self.acc = 0.002
 
@@ -54,21 +55,21 @@ class VirtualCopter(AbstractVirtualCapability):
     def SetRotation(self, params: dict):
         quat = params["Quaternion"]
         if self.functionality["set_rot"] is not None:
-             self.functionality["set_rot"](quat)
+            self.functionality["set_rot"](quat)
         return {"Quaternion": quat}
 
     def GetRotation(self, params: dict):
-        quat = [0,0,0,0]
-        if self.functionality["get_name"] is not None:
+        quat = [0, 0, 0, 0]
+        if self.functionality["get_rot"] is not None:
             quat = self.functionality["get_rot"]()
         return {"Quaternion": quat}
 
     def RotateAroundAxis(self, params: dict):
         axis = params["Axis"]
         if axis == 'z':
-            axis = [0,0,1]
+            axis = [0, 0, 1]
         elif axis == 'y':
-            axis = [0,1,0]
+            axis = [0, 1, 0]
         elif axis == 'x':
             axis = [1, 0, 0]
         degree = params["SimpleDoubleParameter"]
@@ -77,6 +78,13 @@ class VirtualCopter(AbstractVirtualCapability):
         formatPrint(self, f"New Quaternion {quat}")
         return {"Quaternion": quat}
 
+    def GetDirection(self, params: dict):
+        return {"Vector3": self.direction}
+
+    def SetDirection(self, params: dict):
+        new_direction = params["Vector3"]
+        self.direction = new_direction
+        return self.GetDirection()
 
     def loop(self):
         pass
