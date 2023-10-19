@@ -17,7 +17,7 @@ class VirtualCopter(AbstractVirtualCapability):
         self.direction = [1., 1., 1.]
         self.max_vel = 0.25
         self.acc = 0.002
-        self.arming_status
+        self.arming_status = False
 
     def TransferBlock(self, params: dict):
 
@@ -94,7 +94,6 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def GetArmingStatus(self, params: dict):
         return {"SimpleBooleanParameter": self.arming_status}
-
 
     def loop(self):
         pass
