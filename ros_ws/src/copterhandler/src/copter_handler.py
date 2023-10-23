@@ -22,6 +22,8 @@ class CopterHandler:
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = f"copter@{int(rospy.get_param('~semantix_port'))}"
+        self.goal = self.position
+        self.flying = False
 
     def set_rot(self, rot):
         self.rotation = rot
@@ -42,29 +44,34 @@ class CopterHandler:
         self.name = name
 
     def set_pos(self, goal: list):
-
+        self.goal = goal
         rospy.logwarn(f"Flying to Position: {goal}")
-
         self.br.sendTransform((goal[0], goal[1], goal[2]),
                               tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(), "goal", "world")
-        vel = self.acc
-        while True:
-            goal = np.array(goal)
-            vector = goal - self.position
+        # already flying...
+        if self.flying:
+            while self.flying:
+                sleep(.001)
+            return self.position.tolist()
+        else:
+            self.flying = True
+            vel = self.acc
+            while True:
+                goal = np.array(self.goal)
+                vector = goal - self.position
 
-            if np.linalg.norm(vector) < 0.1:
-                self.position = goal
+                if np.linalg.norm(vector) < 0.1:
+                    self.position = goal
+                    self.publish_visual()
+                    self.flying = False
+                    return self.position.tolist()
+
+                current_vel = vel * vector / np.linalg.norm(vector)
+                self.position += current_vel
                 self.publish_visual()
-                return self.position.tolist()
-
-            current_vel = vel * vector / np.linalg.norm(vector)
-            self.position += current_vel
-
-            self.publish_visual()
-            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
-
-            vel += self.acc
-            vel = min(vel, self.max_vel)
+                sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+                vel += self.acc
+                vel = min(vel, self.max_vel)
 
     def publish_visual(self):
         # rospy.logwarn(f"Publishing {self.position}")
