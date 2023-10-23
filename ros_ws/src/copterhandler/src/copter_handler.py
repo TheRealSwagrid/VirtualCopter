@@ -79,7 +79,7 @@ class CopterHandler:
         marker.id = int(rospy.get_param('~semantix_port'))
         marker.header.frame_id = "world"
         marker.header.stamp = rospy.Time.now()
-        marker.ns = f"place_copter"
+        marker.ns = self.name
         marker.lifetime = rospy.Duration(0)
         # marker.color.r = .1
         # marker.color.g = .15
@@ -139,6 +139,4 @@ if __name__ == '__main__':
 
     while not rospy.is_shutdown():
         robot.publish_visual()
-        robot.br.sendTransform(robot.position,
-                               np.array(robot.rotation), rospy.Time.now(), robot.name, "world")
         rate.sleep()
