@@ -2,7 +2,7 @@
 import numpy as np
 import rospy
 import tf
-from tf.transformations import euler_from_quaternion, quaternion_about_axis
+from tf.transformations import euler_from_quaternion, quaternion_about_axis, quaternion_from_euler
 from AbstractVirtualCapability import VirtualCapabilityServer
 from time import sleep
 from visualization_msgs.msg import Marker
@@ -26,7 +26,8 @@ class CopterHandler:
         self.flying = False
 
     def set_rot(self, rot):
-        self.rotation = np.array(rot, dtype=int)
+        self.rotation = quaternion_from_euler(rot[0], rot[1], rot[2])
+        return self.rotation
 
     def rotate(self, axis, deg):
         axis = np.array(axis)
