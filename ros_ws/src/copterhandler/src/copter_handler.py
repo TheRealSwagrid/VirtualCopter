@@ -26,7 +26,7 @@ class CopterHandler:
         self.flying = False
 
     def set_rot(self, rot):
-        self.rotation = rot
+        self.rotation = np.array(rot, dtype=int)
 
     def rotate(self, axis, deg):
         axis = np.array(axis)
