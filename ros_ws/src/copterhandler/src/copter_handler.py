@@ -70,7 +70,9 @@ class CopterHandler:
                 current_vel = vel * vector / np.linalg.norm(vector)
                 self.position += current_vel
                 self.publish_visual()
-                sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+                # TODO wait appropriate
+                sleep(np.sum(np.abs(current_vel)) * .1)
+                #sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
                 vel += self.acc
                 vel = min(vel, self.max_vel)
 
