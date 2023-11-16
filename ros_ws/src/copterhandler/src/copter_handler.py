@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from copy import copy, deepcopy
+
 import numpy as np
 import rospy
 import tf
@@ -17,6 +19,7 @@ class CopterHandler:
         self.rotation = [0, 0, 0, 1]
         self.scale = .2
 
+        self.tf_position = None
         self.max_vel = .1
         self.acc = 0.00001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
@@ -34,6 +37,32 @@ class CopterHandler:
         theta = np.deg2rad(deg)
         self.rotation = list(quaternion_about_axis(theta, axis))
         return self.rotation
+
+    def place_block(self, goal: list):
+        vel = self.acc
+        self.tf_position = deepcopy(self.position)
+        self.tf_position[2] += .1
+        self.tf_position[1] += .2
+
+        while True:
+            goal = np.array(goal)
+            vector = goal - self.tf_position
+
+            if np.linalg.norm(vector) < 0.1:
+                self.tf_position = goal
+                self.publish_visual()
+                return self.position.tolist()
+
+            current_vel = vel * vector / np.linalg.norm(vector)
+            self.tf_position += current_vel
+
+            self.publish_visual()
+            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+            vel += self.acc
+            vel = min(vel, self.max_vel)
+
+    def remove_tf(self):
+        self.tf_position = None
 
     def get_position(self):
         return list(self.position)
@@ -106,8 +135,11 @@ class CopterHandler:
 
         self.pub.publish(marker)
 
+        pos = None
+        if self.tf_position is not None:
+            pos = self.tf_position
         # TF
-        self.br.sendTransform(self.position,
+        self.br.sendTransform(pos if pos is not None else self.position,
                               self.rotation, rospy.Time.now(), self.name, "world")
 
 
@@ -133,6 +165,8 @@ if __name__ == '__main__':
     copter.functionality["get_rot"] = lambda: robot.rotation
     copter.functionality["set_rot"] = robot.set_rot
     copter.functionality["rotate"] = robot.rotate
+    copter.functionality["place_block"] = robot.place_block
+    copter.functionality["remove_tf"] = robot.remove_tf
 
     rospy.logwarn("Starting VirtualCopter Semantix")
     copter.start()

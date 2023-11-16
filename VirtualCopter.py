@@ -11,17 +11,32 @@ from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabili
 class VirtualCopter(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
+        self.current_block_id = None
         self.position = [0., 0., 0.]
         self.functionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None,
-                              "set_rot": None, "rotate": None}
+                              "set_rot": None, "rotate": None, "place_block": None, "remove_tf": None}
         self.direction = [1., 1., 1.]
         self.max_vel = 0.25
         self.acc = 0.002
         self.arming_status = False
 
     def TransferBlock(self, params: dict):
-
+        self.current_block_id = params["SimpleIntegerParameter"]
+        self.invoke_sync("attach_block", {"SimpleIntegerParameter": self.current_block_id,
+                                          "SimpleStringParameter": self.functionality["get_name"]()})
         return params
+    def PlaceBlock(self, params: dict):
+        pos = params["Position3D"]
+        if self.current_block_id is not None:
+            if self.functionality["place_block"] is not None:
+                self.functionality["place_block"](pos)
+            self.invoke_sync("detach_block", {"SimpleIntegerParameter": self.current_block_id})
+            if self.functionality["remove_tf"] is not None:
+                self.functionality["remove_tf"]()
+            self.current_block_id = None
+        else:
+            raise Exception("No Block found")
+        return {}
 
     def FlyToPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
