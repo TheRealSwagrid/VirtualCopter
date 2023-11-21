@@ -20,7 +20,7 @@ class CopterHandler:
         self.scale = 1.5
 
         self.tf_position = None
-        self.max_vel = .1
+        self.max_vel = .5
         self.acc = 0.00001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
@@ -48,7 +48,7 @@ class CopterHandler:
             goal = np.array(goal)
             vector = goal - self.tf_position
 
-            if np.linalg.norm(vector) < 0.1:
+            if np.linalg.norm(vector) < self.max_vel:
                 self.tf_position = goal
                 self.publish_visual()
                 return self.position.tolist()
@@ -57,7 +57,7 @@ class CopterHandler:
             self.tf_position += current_vel
 
             self.publish_visual()
-            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+            sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2]))*.01)
             vel += self.acc
             vel = min(vel, self.max_vel)
 
@@ -90,7 +90,7 @@ class CopterHandler:
                 goal = np.array(self.goal)
                 vector = goal - self.position
 
-                if np.linalg.norm(vector) < 0.1:
+                if np.linalg.norm(vector) < self.max_vel:
                     self.position = goal
                     self.publish_visual()
                     self.flying = False
