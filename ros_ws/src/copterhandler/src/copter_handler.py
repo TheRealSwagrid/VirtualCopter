@@ -157,10 +157,10 @@ if __name__ == '__main__':
     rospy.logwarn("Setting functionality")
 
     copter.functionality["set_pos"] = robot.set_pos
-    copter.functionality["get_pos"] = robot.get_position
+    copter.functionality["get_pos"] = lambda: list(robot.position)
 
     copter.functionality["set_name"] = robot.set_name
-    copter.functionality["get_name"] = robot.get_tf_name
+    copter.functionality["get_name"] = lambda: robot.name
 
     copter.functionality["get_rot"] = lambda: robot.rotation
     copter.functionality["set_rot"] = robot.set_rot
