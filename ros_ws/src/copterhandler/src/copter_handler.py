@@ -29,7 +29,7 @@ class CopterHandler:
         self.flying = False
 
     def set_rot(self, rot):
-        self.rotation = quaternion_from_euler(rot[0], rot[1], rot[2])
+        self.rotation = rot # quaternion_from_euler(rot[0], rot[1], rot[2])
         return self.rotation
 
     def rotate(self, axis, deg):
