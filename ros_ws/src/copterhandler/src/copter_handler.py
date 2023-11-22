@@ -17,11 +17,11 @@ class CopterHandler:
 
         self.position = np.array([0, 0, 2.])
         self.rotation = [0, 0, 0, 1]
-        self.scale = 1.5
+        self.scale = 1.0
 
         self.tf_position = None
-        self.max_vel = .5
-        self.acc = 0.00001
+        self.max_vel = 1.5
+        self.acc = 0.001
         self.pub = rospy.Publisher("/robot", Marker, queue_size=1)
         self.br = tf.TransformBroadcaster()
         self.name = f"copter@{int(rospy.get_param('~semantix_port'))}"
@@ -100,8 +100,8 @@ class CopterHandler:
                 self.position += current_vel
                 self.publish_visual()
                 # TODO wait appropriate
-                sleep(np.sum(np.abs(current_vel)) * .01)
-                #sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
+                # sleep(np.sum(np.abs(current_vel)) * .01)
+                # sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
                 vel += self.acc
                 vel = min(vel, self.max_vel)
 

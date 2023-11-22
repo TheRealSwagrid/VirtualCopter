@@ -16,8 +16,6 @@ class VirtualCopter(AbstractVirtualCapability):
         self.functionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None,
                               "set_rot": None, "rotate": None, "place_block": None, "remove_tf": None}
         self.direction = [1., 1., 1.]
-        self.max_vel = 0.25
-        self.acc = 0.002
         self.arming_status = False
 
     def TransferBlock(self, params: dict):
