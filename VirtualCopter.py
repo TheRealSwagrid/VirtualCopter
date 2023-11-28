@@ -17,12 +17,14 @@ class VirtualCopter(AbstractVirtualCapability):
                               "set_rot": None, "rotate": None, "place_block": None, "remove_tf": None}
         self.direction = [1., 1., 1.]
         self.arming_status = False
+        self.lock = False
 
     def TransferBlock(self, params: dict):
         self.current_block_id = params["SimpleIntegerParameter"]
         self.invoke_sync("attach_block", {"SimpleIntegerParameter": self.current_block_id,
                                           "SimpleStringParameter": self.functionality["get_name"]()})
         return params
+
     def PlaceBlock(self, params: dict):
         pos = params["Position3D"]
         if self.current_block_id is not None:
@@ -38,15 +40,18 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def FlyToPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
+        self.lock = True
         if self.functionality["set_pos"] is not None:
             self.position = self.functionality["set_pos"](params["Position3D"])
+        self.lock = False
         return {"Position3D": self.position}
 
     def SetPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
-
+        self.lock = True
         if self.functionality["set_pos"] is not None:
             self.position = self.functionality["set_pos"](params["Position3D"])
+        self.lock = False
         return {"Position3D": self.position}
 
     def GetPosition(self, params: dict):
@@ -108,6 +113,13 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def GetArmingStatus(self, params: dict):
         return {"SimpleBooleanParameter": self.arming_status}
+
+    def GetLock(self, params: dict):
+        return {"bool": self.lock}
+
+    def SetLock(self, params: dict):
+        self.lock = params["bool"]
+        return self.GetLock({})
 
     def loop(self):
         pass
