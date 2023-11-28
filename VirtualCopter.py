@@ -40,18 +40,19 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def FlyToPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
-        self.lock = True
+        previousLock = copy(self.lock)
         if self.functionality["set_pos"] is not None:
             self.position = self.functionality["set_pos"](params["Position3D"])
-        self.lock = False
+        self.lock = previousLock
         return {"Position3D": self.position}
 
     def SetPosition(self, params: dict):
         formatPrint(self, f"Set Position {params}")
+        previousLock = copy(self.lock)
         self.lock = True
         if self.functionality["set_pos"] is not None:
             self.position = self.functionality["set_pos"](params["Position3D"])
-        self.lock = False
+        self.lock = previousLock
         return {"Position3D": self.position}
 
     def GetPosition(self, params: dict):
