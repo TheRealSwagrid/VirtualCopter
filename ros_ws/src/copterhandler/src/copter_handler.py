@@ -100,7 +100,7 @@ class CopterHandler:
                 self.position += current_vel
                 self.publish_visual()
                 # TODO wait appropriate
-                # sleep(np.sum(np.abs(current_vel)) * .01)
+                sleep(np.sum(np.abs(current_vel)) * .01)
                 # sleep((abs(current_vel[0]) + abs(current_vel[1]) + abs(current_vel[2])))
                 vel += self.acc
                 vel = min(vel, self.max_vel)
