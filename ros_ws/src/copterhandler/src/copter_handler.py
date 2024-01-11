@@ -120,10 +120,10 @@ class CopterHandler:
         marker.pose.position.x = self.position[0]
         marker.pose.position.y = self.position[1]
         marker.pose.position.z = self.position[2]
-        marker.pose.orientation.x = self.rotation[0]
-        marker.pose.orientation.y = self.rotation[1]
-        marker.pose.orientation.z = self.rotation[2]
-        marker.pose.orientation.w = self.rotation[3]
+        marker.pose.orientation.w = self.rotation[0]
+        marker.pose.orientation.x = self.rotation[1]
+        marker.pose.orientation.y = self.rotation[2]
+        marker.pose.orientation.z = self.rotation[3]
         # Scale down
         marker.scale.x = self.scale
         marker.scale.y = self.scale
@@ -139,8 +139,10 @@ class CopterHandler:
         if self.tf_position is not None:
             pos = self.tf_position
         # TF
+        # This is bc ROS takes quaternion as: x,y,z,w
+        rot = [self.rotation[1], self.rotation[2], self.rotation[3], self.rotation[0]]
         self.br.sendTransform(pos if pos is not None else self.position,
-                              self.rotation, rospy.Time.now(), self.name, "world")
+                              rot, rospy.Time.now(), self.name, "world")
 
 
 if __name__ == '__main__':
