@@ -20,8 +20,8 @@ class VirtualCopter(AbstractVirtualCapability):
         self.lock = False
 
     def TransferBlock(self, params: dict):
-        if self.current_block_id is not None and params["SimpleIntegerParameter"] != None:
-            raise ValueError(f"Still got the Block {self.current_block_id}")
+        #if self.current_block_id is not None and params["SimpleIntegerParameter"] != None:
+        #    raise ValueError(f"Still got the Block {self.current_block_id}")
         self.current_block_id = params["SimpleIntegerParameter"]
         if self.current_block_id is None:
             return params
