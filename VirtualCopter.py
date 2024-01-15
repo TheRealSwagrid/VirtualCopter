@@ -37,7 +37,7 @@ class VirtualCopter(AbstractVirtualCapability):
             if self.functionality["place_block"] is not None:
                 self.functionality["place_block"](pos)
             # Wait until the block has been set with the accurate position (BlockHandler is slow)
-            sleep(.25)
+            sleep(.05)
             self.invoke_sync("detach_block", {"SimpleIntegerParameter": self.current_block_id})
             if self.functionality["remove_tf"] is not None:
                 self.functionality["remove_tf"]()
