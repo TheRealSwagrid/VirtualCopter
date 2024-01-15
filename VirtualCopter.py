@@ -23,6 +23,7 @@ class VirtualCopter(AbstractVirtualCapability):
         if self.current_block_id is not None:
             raise ValueError(f"Still got the Block {self.current_block_id}")
         self.current_block_id = params["SimpleIntegerParameter"]
+        print(f"TRANSFERRING {self.current_block_id}")
         if self.current_block_id is None:
             return params
         self.invoke_sync("attach_block", {"SimpleIntegerParameter": self.current_block_id,
