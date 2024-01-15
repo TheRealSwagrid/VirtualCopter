@@ -20,11 +20,13 @@ class VirtualCopter(AbstractVirtualCapability):
         self.lock = False
 
     def TransferBlock(self, params: dict):
-        #if self.current_block_id is not None and params["SimpleIntegerParameter"] != None:
-        #    raise ValueError(f"Still got the Block {self.current_block_id}")
-        self.current_block_id = params["SimpleIntegerParameter"]
-        if self.current_block_id is None:
+        block_id = params["SimpleIntegerParameter"]
+        if self.current_block_id is not None and params["SimpleIntegerParameter"] != -1:
+            raise ValueError(f"Still got the Block {self.current_block_id} while waiting for block {block_id}")
+        if self.current_block_id == -1:
             return params
+
+        self.current_block_id = block_id
         self.invoke_sync("attach_block", {"SimpleIntegerParameter": self.current_block_id,
                                           "SimpleStringParameter": self.functionality["get_name"]()})
         return params
