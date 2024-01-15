@@ -11,7 +11,7 @@ from AbstractVirtualCapability import AbstractVirtualCapability, VirtualCapabili
 class VirtualCopter(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
-        self.current_block_id = None
+        self.current_block_id = -1
         self.position = [0., 0., 0.]
         self.functionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None,
                               "set_rot": None, "rotate": None, "place_block": None, "remove_tf": None}
@@ -21,11 +21,10 @@ class VirtualCopter(AbstractVirtualCapability):
 
     def TransferBlock(self, params: dict):
         block_id = params["SimpleIntegerParameter"]
-        if self.current_block_id is not None and params["SimpleIntegerParameter"] != -1:
+        if self.current_block_id != -1 and params["SimpleIntegerParameter"] != -1:
             raise ValueError(f"Still got the Block {self.current_block_id} while waiting for block {block_id}")
         if self.current_block_id == -1:
             return params
-
         self.current_block_id = block_id
         self.invoke_sync("attach_block", {"SimpleIntegerParameter": self.current_block_id,
                                           "SimpleStringParameter": self.functionality["get_name"]()})
@@ -41,7 +40,7 @@ class VirtualCopter(AbstractVirtualCapability):
             self.invoke_sync("detach_block", {"SimpleIntegerParameter": self.current_block_id})
             if self.functionality["remove_tf"] is not None:
                 self.functionality["remove_tf"]()
-            self.current_block_id = None
+            self.current_block_id = -1
         else:
             raise Exception("No Block found")
         return {}
