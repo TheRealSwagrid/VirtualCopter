@@ -2,6 +2,8 @@
 <launch>
     <node pkg="copterhandler" type="copter_handler.py" name="copter_handler_$(arg semantix_port)">
         <param name="semantix_port" value="$(arg semantix_port)"/>
+        <param name="xmlrpc_port" value="$(arg xmlrpc_port)"/>
+        <param name="tcpros_port" value="$(arg tcpros_port)"/>
     </node>
 
 </launch>
