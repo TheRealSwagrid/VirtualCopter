@@ -27,4 +27,4 @@ COPY AbstractVirtualCapability.py ros_ws/src/copterhandler/src
 RUN cd /ros_ws && source /opt/ros/noetic/setup.bash && catkin_make
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
-CMD source /ros_ws/devel/setup.bash && roslaunch copterhandler copterhandler.launch semantix_port:=${semantix_port} xmlrpc_port:=${xmlrpc_port} tcpros_port:=${tcpros_port}
+CMD source /ros_ws/devel/setup.bash && roslaunch copterhandler copterhandler.launch semantix_port:=${semantix_port}
