@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import socket
 from copy import copy, deepcopy
 
 import numpy as np
@@ -152,7 +153,7 @@ if __name__ == '__main__':
 
     rospy.logwarn("Starting")
 
-    server = VirtualCapabilityServer(int(rospy.get_param('~semantix_port')))
+    server = VirtualCapabilityServer(int(rospy.get_param('~semantix_port')), socket.gethostbyname(socket.gethostname()))
 
     copter = VirtualCopter(server)
     robot = CopterHandler()
