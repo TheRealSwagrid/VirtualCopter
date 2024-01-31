@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import random
 import signal
 import sys
 import time
@@ -18,6 +19,7 @@ class VirtualCopter(AbstractVirtualCapability):
         self.direction = [1., 1., 1.]
         self.arming_status = False
         self.lock = False
+        self.battery_charge_level = random.uniform(0.0, 100.0)
 
     def TransferBlock(self, params: dict):
         block_id = params["SimpleIntegerParameter"]
@@ -130,8 +132,21 @@ class VirtualCopter(AbstractVirtualCapability):
         self.lock = params["bool"]
         return self.GetLock({})
 
+    def GetBatteryChargeLevel(self, params: dict):
+        return {"BatteryChargeLevel": self.battery_charge_level}
+
+    def SetBatteryChargeLevel(self, params: dict):
+        self.battery_charge_level = params["BatteryChargeLevel"]
+        return params["BatteryChargeLevel"]
+
     def loop(self):
-        pass
+        if self.timer is None:
+            self.timer = time.time()
+        elif time.time() - self.timer > 60:
+            self.timer = time.time()
+            self.battery_charge_level -= random.uniform(0.0, 2.0)
+            if self.battery_charge_level <= 0.0:
+                self.battery_charge_level = 0.0
 
 
 if __name__ == '__main__':
