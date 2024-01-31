@@ -22,6 +22,8 @@ class VirtualCopter(AbstractVirtualCapability):
         self.battery_charge_level = random.uniform(0.0, 100.0)
 
     def TransferBlock(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         block_id = params["SimpleIntegerParameter"]
         if self.current_block_id != -1 and block_id != -1:
             raise ValueError(f"Still got the Block {self.current_block_id} while waiting for block {block_id}")
@@ -34,6 +36,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return params
 
     def PlaceBlock(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         pos = params["Position3D"]
         if self.current_block_id is not None:
             if self.functionality["place_block"] is not None:
@@ -49,6 +53,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return {}
 
     def FlyToPosition(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         formatPrint(self, f"Set Position {params}")
         previousLock = copy(self.lock)
         if self.functionality["set_pos"] is not None:
@@ -57,6 +63,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return {"Position3D": self.position}
 
     def SetPosition(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         formatPrint(self, f"Set Position {params}")
         previousLock = copy(self.lock)
         self.lock = True
@@ -84,6 +92,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return {"SimpleStringParameter": tf_name}
 
     def SetRotation(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         quat = params["Quaternion"]
         if self.functionality["set_rot"] is not None:
             self.functionality["set_rot"](quat)
@@ -96,6 +106,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return {"Quaternion": quat}
 
     def RotateAroundAxis(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         axis = params["Axis"]
         if axis == 'z':
             axis = [0, 0, 1]
@@ -118,6 +130,8 @@ class VirtualCopter(AbstractVirtualCapability):
         return self.GetDirection(params)
 
     def SetArmingStatus(self, params: dict):
+        if self.battery_charge_level == 0.0:
+            raise Exception("No battery")
         formatPrint(self, f"Set Arming Status to {params}")
         self.arming_status = params["SimpleBooleanParameter"]
         return self.GetArmingStatus(params)
