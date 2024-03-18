@@ -19,7 +19,7 @@ class VirtualCopter(AbstractVirtualCapability):
         self.direction = [1., 1., 1.]
         self.arming_status = False
         self.lock = False
-        self.battery_charge_level = random.uniform(0.0, 100.0)
+        self.battery_charge_level = random.uniform(60., 100.0)
         self.timer = None
 
     def TransferBlock(self, params: dict):
