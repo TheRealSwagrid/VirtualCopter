@@ -23,6 +23,7 @@ class VirtualCopter(AbstractVirtualCapability):
         self.timer = None
 
     def TransferBlock(self, params: dict):
+        formatPrint(self, "TRANSFER BLOCK" + str(params["SimpleIntegerParameter"]))
         if self.battery_charge_level == 0.0:
             raise Exception("No battery")
         block_id = params["SimpleIntegerParameter"]
