@@ -13,13 +13,14 @@ class VirtualCopter(AbstractVirtualCapability):
     def __init__(self, server):
         super().__init__(server)
         self.current_block_id = -1
+        self.use_battery = True
         self.position = [0., 0., 0.]
         self.functionality = {"get_pos": None, "set_pos": None, "get_name": None, "set_name": None, "get_rot": None,
                               "set_rot": None, "rotate": None, "place_block": None, "remove_tf": None}
         self.direction = [1., 1., 1.]
         self.arming_status = False
         self.lock = False
-        self.battery_charge_level = random.uniform(20., 100.0)
+        self.battery_charge_level = random.uniform(20., 100.0) if self.use_battery else 100.
         self.timer = None
 
     def TransferBlock(self, params: dict):
@@ -41,7 +42,7 @@ class VirtualCopter(AbstractVirtualCapability):
         if self.battery_charge_level == 0.0:
             raise Exception("No battery")
         pos = params["Position3D"]
-        if self.current_block_id is not None:
+        if self.current_block_id is not None and self.current_block_id != -1:
             if self.functionality["place_block"] is not None:
                 self.functionality["place_block"](pos)
             # Wait until the block has been set with the accurate position (BlockHandler is slow)
@@ -141,6 +142,9 @@ class VirtualCopter(AbstractVirtualCapability):
     def GetArmingStatus(self, params: dict):
         return {"SimpleBooleanParameter": self.arming_status}
 
+    def GetBlock(self, params: dict):
+        return {"SimpleIntegerParameter": self.current_block_id}
+
     def GetLock(self, params: dict):
         return {"bool": self.lock}
 
@@ -156,13 +160,14 @@ class VirtualCopter(AbstractVirtualCapability):
         return self.GetBatteryChargeLevel(params)
 
     def loop(self):
-        if self.timer is None:
-            self.timer = time.time()
-        elif time.time() - self.timer > 5:
-            self.timer = time.time()
-            self.battery_charge_level -= random.uniform(0.1, 5.0)
-            if self.battery_charge_level <= 0.0:
-                self.battery_charge_level = 0.0
+        if self.use_battery:
+            if self.timer is None:
+                self.timer = time.time()
+            elif time.time() - self.timer > 5:
+                self.timer = time.time()
+                self.battery_charge_level -= random.uniform(0.1, 5.0)
+                if self.battery_charge_level <= 0.0:
+                    self.battery_charge_level = 0.0
 
 
 if __name__ == '__main__':
